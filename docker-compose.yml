@@ -7,4 +7,6 @@ services:
       - "8585:8585"
     volumes:
        - ./volumes:/app/volumes
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
     restart: unless-stopped

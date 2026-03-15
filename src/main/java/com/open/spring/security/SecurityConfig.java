@@ -169,6 +169,29 @@ public class SecurityConfig {
                         .requestMatchers("/api/ocs-analytics/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN", "ROLE_TEACHER", "ROLE_STUDENT")
                         // ===================================
 
+                        // ========== HUNGER HEROES DONATION API ==========
+                        // Public endpoints — donation lookup & stats (mirrors Flask backend)
+                        .requestMatchers(HttpMethod.GET, "/api/donations/stats").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/donations/leaderboard").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/donations/scan").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/donations/scan").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/donations/{donationId}").permitAll()
+                        // Public read-only analytics endpoints — graph, categories, sorted
+                        .requestMatchers(HttpMethod.GET, "/api/donations/graph").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/donations/graph/recommendations").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/donations/categories/tree").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/donations/categories/path").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/donations/sorted").permitAll()
+                        // Authenticated endpoints — create, accept, deliver, cancel, undo, list own, match
+                        .requestMatchers(HttpMethod.POST, "/api/donations").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/donations/match").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/donations/*/accept").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN", "ROLE_TEACHER", "ROLE_STUDENT")
+                        .requestMatchers(HttpMethod.POST, "/api/donations/*/deliver").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN", "ROLE_TEACHER", "ROLE_STUDENT")
+                        .requestMatchers(HttpMethod.POST, "/api/donations/*/cancel").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN", "ROLE_TEACHER", "ROLE_STUDENT")
+                        .requestMatchers(HttpMethod.POST, "/api/donations/*/undo").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN", "ROLE_TEACHER", "ROLE_STUDENT")
+                        .requestMatchers(HttpMethod.GET, "/api/donations").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN", "ROLE_TEACHER", "ROLE_STUDENT")
+                        // ================================================
+
                         // ========== DEFAULT: ALL OTHER API ENDPOINTS ==========
                         // Secure by default - any endpoint not explicitly listed above requires authentication
                         .requestMatchers("/api/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN", "ROLE_TEACHER", "ROLE_STUDENT")
@@ -215,10 +238,16 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
         configuration.addAllowedOriginPattern("http://localhost:4500");
+        configuration.addAllowedOriginPattern("http://localhost:4100");
+        configuration.addAllowedOriginPattern("http://localhost:4887");
+        configuration.addAllowedOriginPattern("http://127.0.0.1:4100");
+        configuration.addAllowedOriginPattern("http://127.0.0.1:4887");
         configuration.addAllowedOriginPattern("https://opencodingsociety.com");
         configuration.addAllowedOriginPattern("http://opencodingsociety.com");
         configuration.addAllowedOriginPattern("https://pages.opencodingsociety.com");
         configuration.addAllowedOriginPattern("https://spring.opencodingsociety.com");
+        configuration.addAllowedOriginPattern("https://ahaanv19.github.io");
+        configuration.addAllowedOriginPattern("https://*.github.io");
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
